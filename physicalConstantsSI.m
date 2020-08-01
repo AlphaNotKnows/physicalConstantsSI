@@ -25,10 +25,10 @@ classdef physicalConstantsSI
         Mb=str2sym('10^-22*m^2') %Megabarn
         kb=str2sym('10^-25*m^2') %kilobarn
         mb=str2sym('10^-31*m^2') %millibarn
-        mub=strsym('10^-34*m^2') %micronbarn
+        mub=str2sym('10^-34*m^2') %micronbarn
         nb=str2sym('10^-37*m^2') %nanobarn
         pb=str2sym('10^-40*m^2') %picobarn
-        fb=str3sym('10^-43*m^2') %fetobarn
+        fb=str2sym('10^-43*m^2') %fetobarn
         ab=str2sym('10^-46*m^2') %attobarn
         zb=str2sym('10^-49*m^2') %zeptobarn
         yb=str2sym('10^-52*m^2') %yoctobarn
