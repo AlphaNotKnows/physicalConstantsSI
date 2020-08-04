@@ -38,14 +38,19 @@ classdef physicalConstantsSI
         h=str2sym('6.62607015*10^-34*kg*m^2/s') %Planck constant
         hbar=str2sym('1.054571817*10^-34*kg*m^2/s') %Planck constant reduced
         e=str2sym('1.602176634*10^-19*C') %charge of electron
+        %all the mass of particles
         m_e= str2sym('9.1093837015*10^-31*kg') %mass of electron
         m_p= str2sym('1.67262192369*10^-27*kg') %mass of proton
         m_n=str2sym('1.00866491595* 1.66053906660*10^-27*kg') %mass of neutron
+        m_pi0=str2sym('2.406180*10^-28*kg') %mass of \pi_0 134.9768 MeV
+        m_pic=str2sym('2.4880682*10^-28*kg') %%mass of \pi_{+/-} 139.57039 MeV
+        
+        alpha_s=0.1179 %strong coupling constant
         alpha_e= 1/137.035999084 %fine-structure constant of electromagneism
         G_g=str2sym('6.67430*10^-11*m^3*kg^-1*s^-2') %gravational constant
         N_A=6.02214076*10^-23 %Avagadro constant
         k_B=str2sym('1.380649*10^-23*kg*m^2/s^2/K') %Boltzman constant
-        alpha_s=0.1179 %strong coupling constant
+        
         
     end
     methods
@@ -62,11 +67,29 @@ classdef physicalConstantsSI
                / eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) ) );
            d.K = log( eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,E] ) ) ...
                / eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) ) );
+           %one method to examine whether the result is wrong
+           %another group result
+           test=10^30;
+           coef=30*log(10);
+           d1.m = log( eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[test,1,1,1,1] ) ) ...
+               / eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) ) )/coef;
+           d1.s = log( eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,test,1,1,1] ) ) ...
+               / eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) ) )/coef;
+           d1.kg = log( eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,test,1,1] ) ) ...
+               / eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) ) )/coef;
+           d1.C = log( eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,test,1] ) ) ...
+               / eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) ) )/coef;
+           d1.K = log( eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,test] ) ) ...
+               / eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) ) )/coef;
+           tol=10^-14;
+           if abs(d.m-d1.m)>tol||abs(d.s-d1.s)>tol||abs(d.kg-d1.kg)>tol||abs(d.C-d1.C)>tol||abs(d.K-d1.K)>tol
+               error("func's unit is not unform");
+           end
         end
         %Get the value in S.I.
-        function [value,d]=valueSI(obj,func)
+        function [value,D]=valueSI(obj,func)
             value=eval( subs( func,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) );
-            d=obj.dimensionSI(func);
+            D=obj.dimensionSI(func);
         end
         %Get the value in natural units
         function [value,D]=valueNatural(obj,func)
@@ -75,12 +98,12 @@ classdef physicalConstantsSI
             % dimension of eV
             de=(d.kg-d.s-d.m); 
             if de == 0
-                D = sym(0)
+                D = sym(0);
             else D = obj.eV^de;
             end
             division = (obj.eV/obj.c^2)^d.kg * (obj.eV/obj.hbar)^(-1*(d.m+d.s)) * obj.c^d.m;
             func1=func/division;
-            value = obj.valueSI(func1);
+            value = eval( subs( func1,[obj.m,obj.s,obj.kg,obj.C,obj.K],[1,1,1,1,1] ) );
         end
         %transform from Natural units to S.I. for 1.energy 2.momentum 3.
         %mass 4.time 5.length 6.area

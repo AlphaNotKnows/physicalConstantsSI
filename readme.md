@@ -17,17 +17,25 @@ It also restore some basic physical constants, such as $\hbar$,these data come f
 
 This script can also transform values between S.I. and natural units.
 ### supported constant
+- basic constants
+
 |c|h|hbar|e|
 |-|-|-|-|
 |speed of light|Planck constant|Planck constant reduced|charge of electron|
 
-|m_p|m_n|m_e
-|-|-|-|
-|mass of proton|mass of Neutron|mass of electron|
+- mass of particles
+
+|m_p|m_n|m_e|m_pi0|m_pic|
+|-|-|-|-|-|
+|proton|Neutron|elctron|$\pi_0$|$\pi_{\pm}$|
+
+- strength constant
 
 |alpha_e|alpha_s|G_g|
 |-|-|-|
 fine-structure constant of electromagneism|strong coupling constant|gravational constant|
+
+- other constants
 
 |k_B|N_A|
 |-|-|
